@@ -50,6 +50,7 @@ function App() {
   });
 
   const [title, setTitle] = useState("");
+  const [sortType, setSortType] = useState("priority");
 
   const addTodo = () => {
     if (title.trim() === "") {
@@ -90,6 +91,23 @@ function App() {
 
     setTodos(newTodos);
   };
+  const sortedTodos = [...todos].sort((a, b) => {
+    if (sortType === "priority") {
+      return a.priority - b.priority;
+    }
+
+    // ここに期限順の処理を書く
+    if(sortType === "deadline"){
+      return a.deadline.localeCompare(b.deadline);
+    }
+
+    // ここに登録順の処理を書く
+    if(sortType === "id"){
+      return a.id - b.id;
+    }
+
+    return 0;
+  });
 
   useEffect(() => {
     localStorage.setItem(
@@ -117,11 +135,19 @@ function App() {
           追加
         </button>
       </section>
+      <select
+        value={sortType}
+        onChange={(event) => setSortType(event.target.value)}
+      >
+        <option value="priority">優先度順</option>
+        <option value="deadline">期限順</option>
+        <option value="id">登録順</option>
+      </select>
 
       <section>
         <h2>Todo一覧</h2>
 
-        {todos.map((todo) => (
+        {sortedTodos.map((todo) => (
           <TodoItem
             key={todo.id}
             title={todo.title}
