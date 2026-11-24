@@ -39,6 +39,9 @@ function App() {
     setDeadline("");
     setTitle("");
   };
+  const deleteTodo = (id: number) => {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  };
 
   return (
     <main>
@@ -52,6 +55,7 @@ function App() {
           title={todo.title}
           deadline={todo.deadline}
           priority={todo.priority}
+          onDelete={() => deleteTodo(todo.id)}
         />
       ))}
     </main>
