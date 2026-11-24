@@ -114,6 +114,27 @@ function App() {
 
     return 0;
   });
+  const updateTodo = (
+  id: number,
+  newTitle: string,
+  newDeadline: string,
+  newPriority: number
+) => {
+  const newTodos = todos.map(todo => {
+    if (todo.id === id) {
+      return {
+        ...todo,
+        title: newTitle,
+        deadline: newDeadline,
+        priority: newPriority,
+      };
+    }
+
+    return todo;
+  });
+
+  setTodos(newTodos);
+};
 
   useEffect(() => {
     localStorage.setItem(
@@ -164,6 +185,7 @@ function App() {
             completed={todo.completed}
             onDelete={() => deleteTodo(todo.id)}
             onToggle={() => toggleTodo(todo.id)}
+            onUpdate={(newTitle, newDeadline, newPriority) => updateTodo(todo.id, newTitle, newDeadline, newPriority)}
           />
         ))}
       </section>
