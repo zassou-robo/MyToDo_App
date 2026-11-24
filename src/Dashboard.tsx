@@ -43,48 +43,73 @@ function Dashboard({ todos }: DashboardProps) {
     const overdueCount = overdueTodos.length;
 
     return (
-        <section>
+        <section className="dashboard">
             <h2>Dashboard</h2>
-            <p>全タスク：{totalCount}件</p>
-            <p>完了：{completedCount}件</p>
-            <p>未完了：{incompleteTodos.length}件</p>
-            <h3>未完了のタスク</h3>
-            {incompleteTodos.map((todo) => (
-                <p key={todo.id}>
-                    {todo.title}（期限：{todo.deadline}）
-                </p>
-            ))}
-            <h3>7日以内が期限のタスク</h3>
-            {upcomingTodos.length > 0 ? (
-            upcomingTodos.map(todo => (
-                <p key={todo.id}>
-                {todo.title}（期限：{todo.deadline}）
-                </p>
-            ))
-            ) : (
-            <p>7日以内に期限のタスクはありません。</p>
-            )}
-            <h3>期限切れのタスク</h3>
-            <p>期限切れタスク：{overdueCount}件</p>
-            {overdueTodos.length > 0 ? (
-            overdueTodos.map(todo => (
-                <p key={todo.id} style={{ color: "red" }}> {todo.title}（期限：{todo.deadline}）</p>
-            ))) : (
-                <p>期限切れのタスクはありません。</p>
-            )}
+
+            <div className="dashboard-summary">
+                <div className="summary-card">
+                    <span>全タスク</span>
+                    <strong>{totalCount}</strong>
+                </div>
+                <div className="summary-card">
+                    <span>完了</span>
+                    <strong>{completedCount}</strong>
+                </div>
+                <div className="summary-card">
+                    <span>未完了</span>
+                    <strong>{incompleteTodos.length}</strong>
+                </div>
+            </div>
+
+            <div className="dashboard-section">
+                <h3>未完了のタスク</h3>
+                {incompleteTodos.map(todo => (
+                    <p key={todo.id}>
+                        {todo.title}（期限：{todo.deadline}）
+                    </p>
+                ))}
+            </div>
+
+            <div className="dashboard-lists">
+                <div className="dashboard-section">
+                    <h3>7日以内が期限のタスク</h3>
+                    {upcomingTodos.length > 0 ? (
+                        upcomingTodos.map(todo => (
+                            <p key={todo.id}>
+                                {todo.title}（期限：{todo.deadline}）
+                            </p>
+                        ))
+                    ) : (
+                        <p>該当するタスクはありません。</p>
+                    )}
+                </div>
+
+                <div className="dashboard-section">
+                    <h3>期限切れのタスク</h3>
+                    {overdueTodos.length > 0 ? (
+                        overdueTodos.map(todo => (
+                            <p key={todo.id} className="overdue-text">
+                                {todo.title}（期限：{todo.deadline}）
+                            </p>
+                        ))
+                    ) : (
+                        <p>期限切れのタスクはありません。</p>
+                    )}
+                </div>
+            </div>
+
             <div className="progress-container">
-            <div className="progress-info">
-                <span>タスク完了率</span>
-                <span>{completionRate}%</span>
+                <div className="progress-info">
+                    <span>タスク完了率</span>
+                    <span>{completionRate}%</span>
+                </div>
+                <div className="progress-bar">
+                    <div
+                        className="progress-fill"
+                        style={{ width: `${completionRate}%` }}
+                    />
+                </div>
             </div>
-            <div className="progress-bar">
-                <div
-                className="progress-fill"
-                style={{ width: `${completionRate}%` }}
-                />
-            </div>
-            </div>
-            <p>期限切れタスク：{overdueCount}件</p>
         </section>
     );
 }

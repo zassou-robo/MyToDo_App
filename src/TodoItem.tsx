@@ -41,7 +41,7 @@ function TodoItem({
     setIsEditing(false);
   };
   return (
-    <div>
+    <div className="todo-item">
       {isEditing ? (
         <>
           <input
@@ -62,19 +62,47 @@ function TodoItem({
             <option value={2}>中</option>
             <option value={3}>低</option>
           </select>
-          <button onClick={handleSave}>保存</button>
-          <button onClick={() => { setEditTitle(title); setEditDeadline(deadline); setEditPriority(priority); setIsEditing(false);}}>キャンセル</button>
+          <button className="btn-save" onClick={handleSave}>保存</button>
+          <button
+            className="btn-cancel"
+            onClick={() => {
+              setEditTitle(title);
+              setEditDeadline(deadline);
+              setEditPriority(priority);
+              setIsEditing(false);
+            }}
+          >キャンセル</button>
         </>
       ) : (
         <>
-          <input type="checkbox" checked={completed} onChange={onToggle} />
-          <span style={{textDecoration: completed ? "line-through" : "none",}}>{title}</span>
-          <p style={{ color: priorityColor }}>
-            優先度：{priority === 1 ? "高" : priority === 2 ? "中" : "低"}
-          </p>
-          <p>期限：{deadline}</p>
-          <button onClick={() => setIsEditing(true)}>編集</button>
-          <button onClick={onDelete}>削除</button>
+          <div className="todo-item-main">
+            <input
+              type="checkbox"
+              checked={completed}
+              onChange={onToggle}
+            />
+
+            <span className={completed ? "todo-title completed" : "todo-title"}>
+              {title}
+            </span>
+
+            <span className={`priority-badge priority-${priority}`}>
+              {priority === 1 ? "高" : priority === 2 ? "中" : "低"}
+            </span>
+          </div>
+
+          <div className="todo-item-sub">
+            <p>期限：{deadline}</p>
+
+            <div className="todo-item-actions">
+              <button className="btn-edit" onClick={() => setIsEditing(true)}>
+                編集
+              </button>
+              <button className="btn-delete" onClick={onDelete}>
+                削除
+              </button>
+            </div>
+          </div>
         </>
       )}
     </div>
