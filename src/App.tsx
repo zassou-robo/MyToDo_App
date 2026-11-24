@@ -52,6 +52,7 @@ function App() {
 
   const [title, setTitle] = useState("");
   const [deadline, setDeadline] = useState("");
+  const [priority, setPriority] = useState(1);
   const [sortType, setSortType] = useState("priority");
 
   const addTodo = () => {
@@ -65,7 +66,7 @@ function App() {
     const newTodo: Todo = {
       id: Date.now(),
       title: title,
-      priority: 1,
+      priority: priority,
       deadline: deadline,
       completed: false,
     };
@@ -73,6 +74,7 @@ function App() {
     setTodos([...todos, newTodo]);
     setTitle("");
     setDeadline("");
+    setPriority(1);
   };
 
   const deleteTodo = (id: number) => {
@@ -132,6 +134,11 @@ function App() {
       <input type="text" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="タスク名を入力"/>
       <p></p>
       <input type="date" value={deadline} onChange={(event) => setDeadline(event.target.value)}/>
+      <select value={priority} onChange={(event) => setPriority(Number(event.target.value))} >
+        <option value={1}>高</option>
+        <option value={2}>中</option>
+        <option value={3}>低</option>
+      </select>
         <button onClick={addTodo}>
           追加
         </button>

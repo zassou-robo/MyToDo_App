@@ -16,11 +16,15 @@ function TodoItem({
   onDelete,
   onToggle,
 }: TodoItemProps) {
+  const priorityColor =
+    priority === 1 ? "red" :
+    priority === 2 ? "orange" :
+    "blue";
   return (
     <div>
       <input type="checkbox" checked={completed} onChange={onToggle}/>
       <span style={{ textDecoration: completed ? "line-through" : "none",}}> {title} </span>
-      <p>優先度：{priority}</p>
+      <p style={{ color: priorityColor }}>優先度：{ priority === 1 ? "高" : priority === 2 ? "中" : "低" }</p>
       <p>期限：{deadline}</p>
       <button onClick={onDelete}>
         削除
