@@ -40,8 +40,18 @@ function TodoItem({
     onUpdate(editTitle, editDeadline, editPriority);
     setIsEditing(false);
   };
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const [year, month, day] = deadline.split("-").map(Number);
+  const deadlineDate = new Date(year, month - 1, day);
+  const daysLeft = Math.ceil(
+    (deadlineDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+  );
+
+  const isOverdue = !completed && daysLeft < 0;
+  const isUrgent = !completed && daysLeft >= 0 && daysLeft <= 3;
   return (
-    <div className="todo-item">
+    <div className={`todo-item ${isOverdue ? "overdue" : isUrgent ? "urgent" : ""}`}>
       {isEditing ? (
         <>
           <input
