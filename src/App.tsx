@@ -180,19 +180,24 @@ function App() {
 
       <section>
         <h2>Todo一覧</h2>
-
-        {filteredTodos.map((todo) => (
-          <TodoItem
-            key={todo.id}
-            title={todo.title}
-            deadline={todo.deadline}
-            priority={todo.priority}
-            completed={todo.completed}
-            onDelete={() => deleteTodo(todo.id)}
-            onToggle={() => toggleTodo(todo.id)}
-            onUpdate={(newTitle, newDeadline, newPriority) => updateTodo(todo.id, newTitle, newDeadline, newPriority)}
-          />
-        ))}
+          {filteredTodos.length > 0 ? (
+            filteredTodos.map((todo) => (
+              <TodoItem
+                key={todo.id}
+                title={todo.title}
+                deadline={todo.deadline}
+                priority={todo.priority}
+                completed={todo.completed}
+                onDelete={() => deleteTodo(todo.id)}
+                onToggle={() => toggleTodo(todo.id)}
+                onUpdate={(newTitle, newDeadline, newPriority) =>
+                  updateTodo(todo.id, newTitle, newDeadline, newPriority)
+                }
+              />
+            ))
+          ) : (
+            <p>該当するタスクはありません。</p>
+          )}
       </section>
       <input
         type="text"
