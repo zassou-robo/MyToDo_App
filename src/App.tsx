@@ -55,6 +55,7 @@ function App() {
   const [priority, setPriority] = useState(1);
   const [sortType, setSortType] = useState("priority");
   const [searchText, setSearchText] = useState("");
+  const [filterType, setFilterType] = useState("all");
 
   const addTodo = () => {
     if (title.trim() === "") {
@@ -115,9 +116,19 @@ function App() {
 
     return 0;
   });
-  const filteredTodos = sortedTodos.filter(todo =>
-    todo.title.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const filteredTodos = sortedTodos
+    .filter(todo =>
+      todo.title.toLowerCase().includes(searchText.toLowerCase())
+    )
+    .filter(todo => {
+      if (filterType === "incomplete") {
+        return !todo.completed;
+      }
+      if (filterType === "completed") {
+        return todo.completed;
+      }
+      return true;
+  });
 
   const updateTodo = (
   id: number,
@@ -205,6 +216,14 @@ function App() {
         onChange={(event) => setSearchText(event.target.value)}
         placeholder="タスク名で検索"
       />
+      <select
+        value={filterType}
+        onChange={(event) => setFilterType(event.target.value)}
+      >
+        <option value="all">すべて</option>
+        <option value="incomplete">未完了のみ</option>
+        <option value="completed">完了済みのみ</option>
+      </select>
     </main>
   );
 }
