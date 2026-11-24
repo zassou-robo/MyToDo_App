@@ -37,10 +37,10 @@ function Dashboard({ todos }: DashboardProps) {
         return deadlineDate < today;
     });
     const completionRate = totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
-    const highPriorityCount = todos.filter(
-        todo => !todo.completed && todo.priority === 1
-    ).length;
-    const overdueCount = overdueTodos.length;
+    // const highPriorityCount = todos.filter(
+    //     todo => !todo.completed && todo.priority === 1
+    // ).length;
+    // const overdueCount = overdueTodos.length;
 
     return (
         <section className="dashboard">

@@ -29,10 +29,10 @@ function TodoItem({
   const [editTitle, setEditTitle] = useState(title);
   const [editDeadline, setEditDeadline] = useState(deadline);
   const [editPriority, setEditPriority] = useState(priority);
-  const priorityColor =
-    priority === 1 ? "red" :
-    priority === 2 ? "orange" :
-    "blue";
+  // const priorityColor =
+  //   priority === 1 ? "red" :
+  //   priority === 2 ? "orange" :
+  //   "blue";
   const handleSave = () => {
     if (editTitle.trim() === "" || editDeadline === "") {
       return;
