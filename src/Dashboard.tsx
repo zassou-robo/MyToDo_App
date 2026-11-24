@@ -24,10 +24,18 @@ function Dashboard({ todos }: DashboardProps) {
     const nextWeek = new Date(today);
     nextWeek.setDate(nextWeek.getDate() + 7);
     const upcomingTodos = todos.filter(todo => !todo.completed).filter(todo => {
-            const [year, month, day] = todo.deadline.split("-").map(Number);
-            const deadlineDate = new Date(year, month - 1, day);
-            return deadlineDate >= today && deadlineDate <= nextWeek;
-        }).sort((a, b) => a.deadline.localeCompare(b.deadline));
+        const [year, month, day] = todo.deadline.split("-").map(Number);
+        const deadlineDate = new Date(year, month - 1, day);
+        return deadlineDate >= today && deadlineDate <= nextWeek;
+    }).sort((a, b) => a.deadline.localeCompare(b.deadline));
+    const overdueTodos = todos.filter(todo => {
+        if (todo.completed) {
+            return false;
+        }
+        const [year, month, day] = todo.deadline.split("-").map(Number);
+        const deadlineDate = new Date(year, month - 1, day);
+        return deadlineDate < today;
+    });
 
     return (
         <section>
@@ -50,6 +58,13 @@ function Dashboard({ todos }: DashboardProps) {
             ))
             ) : (
             <p>7日以内に期限のタスクはありません。</p>
+            )}
+            <h3>期限切れのタスク</h3>
+            {overdueTodos.length > 0 ? (
+            overdueTodos.map(todo => (
+                <p key={todo.id} style={{ color: "red" }}> {todo.title}（期限：{todo.deadline}）</p>
+            ))) : (
+                <p>期限切れのタスクはありません。</p>
             )}
         </section>
     );
