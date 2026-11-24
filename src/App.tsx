@@ -54,6 +54,7 @@ function App() {
   const [deadline, setDeadline] = useState("");
   const [priority, setPriority] = useState(1);
   const [sortType, setSortType] = useState("priority");
+  const [searchText, setSearchText] = useState("");
 
   const addTodo = () => {
     if (title.trim() === "") {
@@ -114,6 +115,10 @@ function App() {
 
     return 0;
   });
+  const filteredTodos = sortedTodos.filter(todo =>
+    todo.title.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   const updateTodo = (
   id: number,
   newTitle: string,
@@ -176,7 +181,7 @@ function App() {
       <section>
         <h2>Todo一覧</h2>
 
-        {sortedTodos.map((todo) => (
+        {filteredTodos.map((todo) => (
           <TodoItem
             key={todo.id}
             title={todo.title}
@@ -189,6 +194,12 @@ function App() {
           />
         ))}
       </section>
+      <input
+        type="text"
+        value={searchText}
+        onChange={(event) => setSearchText(event.target.value)}
+        placeholder="タスク名で検索"
+      />
     </main>
   );
 }
