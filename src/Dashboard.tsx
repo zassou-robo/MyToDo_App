@@ -36,6 +36,11 @@ function Dashboard({ todos }: DashboardProps) {
         const deadlineDate = new Date(year, month - 1, day);
         return deadlineDate < today;
     });
+    const completionRate = totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
+    const highPriorityCount = todos.filter(
+        todo => !todo.completed && todo.priority === 1
+    ).length;
+    const overdueCount = overdueTodos.length;
 
     return (
         <section>
@@ -60,12 +65,26 @@ function Dashboard({ todos }: DashboardProps) {
             <p>7日以内に期限のタスクはありません。</p>
             )}
             <h3>期限切れのタスク</h3>
+            <p>期限切れタスク：{overdueCount}件</p>
             {overdueTodos.length > 0 ? (
             overdueTodos.map(todo => (
                 <p key={todo.id} style={{ color: "red" }}> {todo.title}（期限：{todo.deadline}）</p>
             ))) : (
                 <p>期限切れのタスクはありません。</p>
             )}
+            <div className="progress-container">
+            <div className="progress-info">
+                <span>タスク完了率</span>
+                <span>{completionRate}%</span>
+            </div>
+            <div className="progress-bar">
+                <div
+                className="progress-fill"
+                style={{ width: `${completionRate}%` }}
+                />
+            </div>
+            </div>
+            <p>期限切れタスク：{overdueCount}件</p>
         </section>
     );
 }
