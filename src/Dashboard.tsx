@@ -10,10 +10,6 @@ type DashboardProps = {
 
 function Dashboard({ todos }: DashboardProps) {
     const totalCount = todos.length;
-    const today = new Date();
-    const nextWeek = new Date();
-
-    nextWeek.setDate(today.getDate() + 7);
 
     const completedCount = todos.filter(
     (todo) => todo.completed
@@ -22,6 +18,16 @@ function Dashboard({ todos }: DashboardProps) {
     const incompleteTodos = todos.filter(
     (todo) => !todo.completed
     );
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const nextWeek = new Date(today);
+    nextWeek.setDate(nextWeek.getDate() + 7);
+    const upcomingTodos = todos.filter(todo => !todo.completed).filter(todo => {
+            const [year, month, day] = todo.deadline.split("-").map(Number);
+            const deadlineDate = new Date(year, month - 1, day);
+            return deadlineDate >= today && deadlineDate <= nextWeek;
+        }).sort((a, b) => a.deadline.localeCompare(b.deadline));
 
     return (
         <section>
@@ -35,6 +41,16 @@ function Dashboard({ todos }: DashboardProps) {
                     {todo.title}（期限：{todo.deadline}）
                 </p>
             ))}
+            <h3>7日以内が期限のタスク</h3>
+            {upcomingTodos.length > 0 ? (
+            upcomingTodos.map(todo => (
+                <p key={todo.id}>
+                {todo.title}（期限：{todo.deadline}）
+                </p>
+            ))
+            ) : (
+            <p>7日以内に期限のタスクはありません。</p>
+            )}
         </section>
     );
 }

@@ -131,7 +131,7 @@ function App() {
       <section>
       <input type="text" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="タスク名を入力"/>
       <p></p>
-      <input type="text" value={deadline} onChange={(event) => setDeadline(event.target.value)} placeholder="期限を入力"/>
+      <input type="date" value={deadline} onChange={(event) => setDeadline(event.target.value)}/>
         <button onClick={addTodo}>
           追加
         </button>
