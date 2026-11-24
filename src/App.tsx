@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Header from './Header';
 import TodoItem from './TodoItem';
+import Dashboard from './Dashboard';
 
 type Todo = {
   id: number;
@@ -50,10 +51,14 @@ function App() {
   });
 
   const [title, setTitle] = useState("");
+  const [deadline, setDeadline] = useState("");
   const [sortType, setSortType] = useState("priority");
 
   const addTodo = () => {
     if (title.trim() === "") {
+      return;
+    }
+    if(deadline.trim() === ""){
       return;
     }
 
@@ -61,12 +66,13 @@ function App() {
       id: Date.now(),
       title: title,
       priority: 1,
-      deadline: "2026-12-01",
+      deadline: deadline,
       completed: false,
     };
 
     setTodos([...todos, newTodo]);
     setTitle("");
+    setDeadline("");
   };
 
   const deleteTodo = (id: number) => {
@@ -96,12 +102,10 @@ function App() {
       return a.priority - b.priority;
     }
 
-    // ここに期限順の処理を書く
     if(sortType === "deadline"){
       return a.deadline.localeCompare(b.deadline);
     }
 
-    // ここに登録順の処理を書く
     if(sortType === "id"){
       return a.id - b.id;
     }
@@ -122,15 +126,12 @@ function App() {
         title="My Todo App"
         task_amount={todos.length}
       />
+      <Dashboard todos={todos} />
 
       <section>
-        <input
-          type="text"
-          value={title}
-          onChange={(event) => setTitle(event.target.value)}
-          placeholder="タスク名を入力"
-        />
-
+      <input type="text" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="タスク名を入力"/>
+      <p></p>
+      <input type="text" value={deadline} onChange={(event) => setDeadline(event.target.value)} placeholder="期限を入力"/>
         <button onClick={addTodo}>
           追加
         </button>
