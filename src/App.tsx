@@ -43,36 +43,45 @@ const initialTodos: Todo[] = [
 const DISCORD_WORKER_URL =
   "https://mytodo-discord-notify.mytodo-app.workers.dev/test";
 
-type DiscordEvent = "added" | "completed";
 
-const notifyDiscord = async (
-  event: DiscordEvent,
-  title: string,
-  note: string = ""
-) => {
+type DiscordRequest =
+  | {
+      action: "add";
+      id: number;
+      title: string;
+      note: string;
+      priority: number;
+      deadline: string;
+    }
+  | {
+      event: "completed";
+      title: string;
+      note: string;
+    };
+
+const notifyDiscord = async (data: DiscordRequest) => {
   try {
     const response = await fetch(DISCORD_WORKER_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        event,
-        title,
-        note,
-      }),
+      body: JSON.stringify(data),
     });
 
     if (!response.ok) {
       console.error(
-        "Discord通知に失敗しました:",
+        "Discord通知・Todo保存に失敗しました:",
         await response.text()
       );
+    } else {
+      console.log("Workerへの送信に成功しました");
     }
   } catch (error) {
-    console.error("Discord通知エラー:", error);
+    console.error("Worker通信エラー:", error);
   }
 };
+
 
 function App() {
   const [todos, setTodos] = useState<Todo[]>(() => {
@@ -121,8 +130,15 @@ function App() {
 
     setTodos((prevTodos) => [...prevTodos, newTodo]);
 
-    // Discord通知
-    void notifyDiscord("added", newTodo.title, newTodo.note);
+    // D1へのTodo保存・予約通知登録・Discord通知
+    void notifyDiscord({
+      action: "add",
+      id: newTodo.id,
+      title: newTodo.title,
+      note: newTodo.note ?? "",
+      priority: newTodo.priority,
+      deadline: newTodo.deadline,
+    });
 
     setTitle("");
     setDeadline("");
@@ -151,11 +167,11 @@ function App() {
 
     // 未完了から完了に変更した場合だけ通知
     if (!targetTodo.completed) {
-      void notifyDiscord(
-        "completed",
-        targetTodo.title,
-        targetTodo.note
-      );
+      void notifyDiscord({
+        event: "completed",
+        title: targetTodo.title,
+        note: targetTodo.note ?? "",
+      });
     }
   };
 
