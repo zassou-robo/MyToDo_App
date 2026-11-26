@@ -81,6 +81,8 @@ type DiscordRequest =
     };
 
 const notifyDiscord = async (data: DiscordRequest) => {
+  console.log("[Worker Request]", data);
+
   try {
     const response = await fetch(DISCORD_WORKER_URL, {
       method: "POST",
@@ -90,13 +92,16 @@ const notifyDiscord = async (data: DiscordRequest) => {
       body: JSON.stringify(data),
     });
 
+    const responseText = await response.text();
+
+    console.log("[Worker Response]", {
+      status: response.status,
+      ok: response.ok,
+      body: responseText,
+    });
+
     if (!response.ok) {
-      console.error(
-        "Discord通知・Todo保存に失敗しました:",
-        await response.text()
-      );
-    } else {
-      console.log("Workerへの送信に成功しました");
+      console.error("Worker処理失敗:", responseText);
     }
   } catch (error) {
     console.error("Worker通信エラー:", error);
