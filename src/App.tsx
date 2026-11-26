@@ -36,7 +36,7 @@ const initialTodos: Todo[] = [
 ];
 
 const DISCORD_WORKER_URL =
-  "https://mytodo-discord-notify.k-inabashigeyuki.workers.dev/test";
+  "https://mytodo-discord-notify.mytodo-app.workers.dev/test";
 
 type DiscordEvent = "added" | "completed";
 
