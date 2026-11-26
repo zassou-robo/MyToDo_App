@@ -35,6 +35,39 @@ const initialTodos: Todo[] = [
   },
 ];
 
+const DISCORD_WORKER_URL =
+  "https://mytodo-discord-notify.k-inabashigeyuki.workers.dev/test";
+
+type DiscordEvent = "added" | "completed";
+
+const notifyDiscord = async (
+  event: DiscordEvent,
+  title: string
+) => {
+  try {
+    const response = await fetch(DISCORD_WORKER_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        event,
+        title,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error(
+        "Discord通知に失敗しました:",
+        await response.text()
+      );
+    }
+  } catch (error) {
+    console.error("Discord通知エラー:", error);
+  }
+};
+
+
 function App() {
   const [todos, setTodos] = useState<Todo[]>(() => {
     const savedTodos = localStorage.getItem("todos");
@@ -63,13 +96,17 @@ function App() {
 
     const newTodo: Todo = {
       id: Date.now(),
-      title: title,
+      title: title.trim(),
       priority: priority,
       deadline: deadline,
       completed: false,
     };
 
     setTodos([...todos, newTodo]);
+
+    // Discord通知
+    void notifyDiscord("added", newTodo.title);
+
     setTitle("");
     setDeadline("");
     setPriority(1);
@@ -84,6 +121,12 @@ function App() {
   };
 
   const toggleTodo = (id: number) => {
+    const targetTodo = todos.find(
+      (todo) => todo.id === id
+    );
+
+    if (!targetTodo) return;
+
     const newTodos = todos.map((todo) => {
       if (todo.id === id) {
         return {
@@ -96,6 +139,11 @@ function App() {
     });
 
     setTodos(newTodos);
+
+    // 未完了から完了に変更した場合だけ通知
+    if (!targetTodo.completed) {
+      void notifyDiscord("completed", targetTodo.title);
+    }
   };
 
   const sortedTodos = [...todos].sort((a, b) => {
@@ -194,7 +242,7 @@ function App() {
           <option value={3}>低</option>
         </select>
 
-        <button onClick={addTodo}>
+        <button className="btn-add" onClick={addTodo}>
           追加
         </button>
       </section>
