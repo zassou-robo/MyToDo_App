@@ -54,9 +54,30 @@ type DiscordRequest =
       deadline: string;
     }
   | {
-      event: "completed";
+      action: "update";
+      id: number;
       title: string;
       note: string;
+      priority: number;
+      deadline: string;
+    }
+  | {
+      action: "delete";
+      id: number;
+    }
+  | {
+      action: "complete";
+      id: number;
+      title: string;
+      note: string;
+    }
+  | {
+      action: "reopen";
+      id: number;
+      title: string;
+      note: string;
+      priority: number;
+      deadline: string;
     };
 
 const notifyDiscord = async (data: DiscordRequest) => {
@@ -150,6 +171,11 @@ function App() {
     setTodos((prevTodos) =>
       prevTodos.filter((todo) => todo.id !== id)
     );
+
+    void notifyDiscord({
+      action: "delete",
+      id,
+    });
   };
 
   const toggleTodo = (id: number) => {
@@ -157,22 +183,64 @@ function App() {
 
     if (!targetTodo) return;
 
+    const nextCompleted = !targetTodo.completed;
+
     setTodos((prevTodos) =>
       prevTodos.map((todo) =>
         todo.id === id
-          ? { ...todo, completed: !todo.completed }
+          ? { ...todo, completed: nextCompleted }
           : todo
       )
     );
 
-    // 未完了から完了に変更した場合だけ通知
-    if (!targetTodo.completed) {
+    if (nextCompleted) {
       void notifyDiscord({
-        event: "completed",
+        action: "complete",
+        id: targetTodo.id,
         title: targetTodo.title,
         note: targetTodo.note ?? "",
       });
+    } else {
+      void notifyDiscord({
+        action: "reopen",
+        id: targetTodo.id,
+        title: targetTodo.title,
+        note: targetTodo.note ?? "",
+        priority: targetTodo.priority,
+        deadline: targetTodo.deadline,
+      });
     }
+  };
+
+  const updateTodo = (
+    id: number,
+    newTitle: string,
+    newDeadline: string,
+    newPriority: number,
+    newNote: string
+  ) => {
+    setTodos((prevTodos) =>
+      prevTodos.map((todo) =>
+        todo.id === id
+          ? {
+              ...todo,
+              title: newTitle,
+              deadline: newDeadline,
+              priority: newPriority,
+              note: newNote,
+            }
+          : todo
+      )
+    );
+
+    void notifyDiscord({
+      action: "update",
+      id,
+      title: newTitle,
+      note: newNote,
+      priority: newPriority,
+      deadline: newDeadline,
+    });
   };
 
   const sortedTodos = [...todos].sort((a, b) => {
@@ -206,28 +274,6 @@ function App() {
 
       return true;
     });
-
-  const updateTodo = (
-    id: number,
-    newTitle: string,
-    newDeadline: string,
-    newPriority: number,
-    newNote: string
-  ) => {
-    setTodos((prevTodos) =>
-      prevTodos.map((todo) =>
-        todo.id === id
-          ? {
-              ...todo,
-              title: newTitle,
-              deadline: newDeadline,
-              priority: newPriority,
-              note: newNote,
-            }
-          : todo
-      )
-    );
-  };
 
   useEffect(() => {
     localStorage.setItem("todos", JSON.stringify(todos));
