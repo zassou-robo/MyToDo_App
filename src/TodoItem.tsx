@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 
 type TodoItemProps = {
@@ -5,14 +6,14 @@ type TodoItemProps = {
   deadline: string;
   priority: number;
   completed: boolean;
+  note: string;
   onDelete: () => void;
   onToggle: () => void;
-
-  // 追加
   onUpdate: (
     newTitle: string,
     newDeadline: string,
-    newPriority: number
+    newPriority: number,
+    newNote: string
   ) => void;
 };
 
@@ -21,6 +22,7 @@ function TodoItem({
   deadline,
   priority,
   completed,
+  note,
   onDelete,
   onToggle,
   onUpdate,
@@ -29,59 +31,101 @@ function TodoItem({
   const [editTitle, setEditTitle] = useState(title);
   const [editDeadline, setEditDeadline] = useState(deadline);
   const [editPriority, setEditPriority] = useState(priority);
-  // const priorityColor =
-  //   priority === 1 ? "red" :
-  //   priority === 2 ? "orange" :
-  //   "blue";
+  const [editNote, setEditNote] = useState(note);
+
   const handleSave = () => {
     if (editTitle.trim() === "" || editDeadline === "") {
       return;
     }
-    onUpdate(editTitle, editDeadline, editPriority);
+
+    onUpdate(
+      editTitle.trim(),
+      editDeadline,
+      editPriority,
+      editNote.trim()
+    );
+
     setIsEditing(false);
   };
+
+  const handleEdit = () => {
+    setEditTitle(title);
+    setEditDeadline(deadline);
+    setEditPriority(priority);
+    setEditNote(note);
+    setIsEditing(true);
+  };
+
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+
   const [year, month, day] = deadline.split("-").map(Number);
   const deadlineDate = new Date(year, month - 1, day);
+
   const daysLeft = Math.ceil(
-    (deadlineDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+    (deadlineDate.getTime() - today.getTime()) /
+      (1000 * 60 * 60 * 24)
   );
 
   const isOverdue = !completed && daysLeft < 0;
-  const isUrgent = !completed && daysLeft >= 0 && daysLeft <= 3;
+  const isUrgent =
+    !completed && daysLeft >= 0 && daysLeft <= 3;
+
   return (
-    <div className={`todo-item ${isOverdue ? "overdue" : isUrgent ? "urgent" : ""}`}>
+    <div
+      className={`todo-item ${
+        isOverdue ? "overdue" : isUrgent ? "urgent" : ""
+      }`}
+    >
       {isEditing ? (
         <>
           <input
             type="text"
             value={editTitle}
-            onChange={(event) => setEditTitle(event.target.value)}
+            onChange={(event) =>
+              setEditTitle(event.target.value)
+            }
+            placeholder="タスク名"
           />
+
           <input
             type="date"
             value={editDeadline}
-            onChange={(event) => setEditDeadline(event.target.value)}
+            onChange={(event) =>
+              setEditDeadline(event.target.value)
+            }
           />
+
           <select
             value={editPriority}
-            onChange={(event) => setEditPriority(Number(event.target.value))}
+            onChange={(event) =>
+              setEditPriority(Number(event.target.value))
+            }
           >
             <option value={1}>高</option>
             <option value={2}>中</option>
             <option value={3}>低</option>
           </select>
-          <button className="btn-save" onClick={handleSave}>保存</button>
+
+          <textarea
+            value={editNote}
+            onChange={(event) =>
+              setEditNote(event.target.value)
+            }
+            placeholder="メモ（任意）"
+            rows={3}
+          />
+
+          <button className="btn-save" onClick={handleSave}>
+            保存
+          </button>
+
           <button
             className="btn-cancel"
-            onClick={() => {
-              setEditTitle(title);
-              setEditDeadline(deadline);
-              setEditPriority(priority);
-              setIsEditing(false);
-            }}
-          >キャンセル</button>
+            onClick={() => setIsEditing(false)}
+          >
+            キャンセル
+          </button>
         </>
       ) : (
         <>
@@ -92,22 +136,39 @@ function TodoItem({
               onChange={onToggle}
             />
 
-            <span className={completed ? "todo-title completed" : "todo-title"}>
+            <span
+              className={
+                completed
+                  ? "todo-title completed"
+                  : "todo-title"
+              }
+            >
               {title}
             </span>
 
             <span className={`priority-badge priority-${priority}`}>
-              {priority === 1 ? "高" : priority === 2 ? "中" : "低"}
+              {priority === 1
+                ? "高"
+                : priority === 2
+                  ? "中"
+                  : "低"}
             </span>
           </div>
 
           <div className="todo-item-sub">
             <p>期限：{deadline}</p>
 
+            {note && (
+              <p className="todo-note">
+                メモ：{note}
+              </p>
+            )}
+
             <div className="todo-item-actions">
-              <button className="btn-edit" onClick={() => setIsEditing(true)}>
+              <button className="btn-edit" onClick={handleEdit}>
                 編集
               </button>
+
               <button className="btn-delete" onClick={onDelete}>
                 削除
               </button>

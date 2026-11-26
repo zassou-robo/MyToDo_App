@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import Header from './Header';
 import TodoItem from './TodoItem';
@@ -9,6 +10,7 @@ type Todo = {
   priority: number;
   deadline: string;
   completed: boolean;
+  note?: string;
 };
 
 const initialTodos: Todo[] = [
@@ -18,6 +20,7 @@ const initialTodos: Todo[] = [
     priority: 1,
     deadline: "2026-11-25",
     completed: false,
+    note: "",
   },
   {
     id: 2,
@@ -25,6 +28,7 @@ const initialTodos: Todo[] = [
     priority: 2,
     deadline: "2026-11-28",
     completed: false,
+    note: "",
   },
   {
     id: 3,
@@ -32,6 +36,7 @@ const initialTodos: Todo[] = [
     priority: 3,
     deadline: "2026-11-30",
     completed: false,
+    note: "",
   },
 ];
 
@@ -42,7 +47,8 @@ type DiscordEvent = "added" | "completed";
 
 const notifyDiscord = async (
   event: DiscordEvent,
-  title: string
+  title: string,
+  note: string = ""
 ) => {
   try {
     const response = await fetch(DISCORD_WORKER_URL, {
@@ -53,6 +59,7 @@ const notifyDiscord = async (
       body: JSON.stringify({
         event,
         title,
+        note,
       }),
     });
 
@@ -67,14 +74,19 @@ const notifyDiscord = async (
   }
 };
 
-
 function App() {
   const [todos, setTodos] = useState<Todo[]>(() => {
     const savedTodos = localStorage.getItem("todos");
 
     if (savedTodos !== null) {
       try {
-        return JSON.parse(savedTodos) as Todo[];
+        const parsedTodos = JSON.parse(savedTodos) as Todo[];
+
+        // 以前のデータにメモ欄がなくても読み込めるようにする
+        return parsedTodos.map((todo) => ({
+          ...todo,
+          note: todo.note ?? "",
+        }));
       } catch {
         console.error("Todoデータの読み込みに失敗しました");
       }
@@ -86,63 +98,64 @@ function App() {
   const [title, setTitle] = useState("");
   const [deadline, setDeadline] = useState("");
   const [priority, setPriority] = useState(1);
+  const [note, setNote] = useState("");
+
   const [sortType, setSortType] = useState("priority");
   const [searchText, setSearchText] = useState("");
   const [filterType, setFilterType] = useState("all");
 
-  const addTodo = () => {
+  const addTodo = (event?: React.FormEvent<HTMLFormElement>) => {
+    event?.preventDefault();
+
     if (title.trim() === "") return;
     if (deadline.trim() === "") return;
 
     const newTodo: Todo = {
       id: Date.now(),
       title: title.trim(),
-      priority: priority,
-      deadline: deadline,
+      priority,
+      deadline,
       completed: false,
+      note: note.trim(),
     };
 
-    setTodos([...todos, newTodo]);
+    setTodos((prevTodos) => [...prevTodos, newTodo]);
 
     // Discord通知
-    void notifyDiscord("added", newTodo.title);
+    void notifyDiscord("added", newTodo.title, newTodo.note);
 
     setTitle("");
     setDeadline("");
     setPriority(1);
+    setNote("");
   };
 
   const deleteTodo = (id: number) => {
-    const newTodos = todos.filter(
-      (todo) => todo.id !== id
+    setTodos((prevTodos) =>
+      prevTodos.filter((todo) => todo.id !== id)
     );
-
-    setTodos(newTodos);
   };
 
   const toggleTodo = (id: number) => {
-    const targetTodo = todos.find(
-      (todo) => todo.id === id
-    );
+    const targetTodo = todos.find((todo) => todo.id === id);
 
     if (!targetTodo) return;
 
-    const newTodos = todos.map((todo) => {
-      if (todo.id === id) {
-        return {
-          ...todo,
-          completed: !todo.completed,
-        };
-      }
-
-      return todo;
-    });
-
-    setTodos(newTodos);
+    setTodos((prevTodos) =>
+      prevTodos.map((todo) =>
+        todo.id === id
+          ? { ...todo, completed: !todo.completed }
+          : todo
+      )
+    );
 
     // 未完了から完了に変更した場合だけ通知
     if (!targetTodo.completed) {
-      void notifyDiscord("completed", targetTodo.title);
+      void notifyDiscord(
+        "completed",
+        targetTodo.title,
+        targetTodo.note
+      );
     }
   };
 
@@ -163,10 +176,10 @@ function App() {
   });
 
   const filteredTodos = sortedTodos
-    .filter(todo =>
+    .filter((todo) =>
       todo.title.toLowerCase().includes(searchText.toLowerCase())
     )
-    .filter(todo => {
+    .filter((todo) => {
       if (filterType === "incomplete") {
         return !todo.completed;
       }
@@ -182,29 +195,26 @@ function App() {
     id: number,
     newTitle: string,
     newDeadline: string,
-    newPriority: number
+    newPriority: number,
+    newNote: string
   ) => {
-    const newTodos = todos.map(todo => {
-      if (todo.id === id) {
-        return {
-          ...todo,
-          title: newTitle,
-          deadline: newDeadline,
-          priority: newPriority,
-        };
-      }
-
-      return todo;
-    });
-
-    setTodos(newTodos);
+    setTodos((prevTodos) =>
+      prevTodos.map((todo) =>
+        todo.id === id
+          ? {
+              ...todo,
+              title: newTitle,
+              deadline: newDeadline,
+              priority: newPriority,
+              note: newNote,
+            }
+          : todo
+      )
+    );
   };
 
   useEffect(() => {
-    localStorage.setItem(
-      "todos",
-      JSON.stringify(todos)
-    );
+    localStorage.setItem("todos", JSON.stringify(todos));
   }, [todos]);
 
   return (
@@ -220,31 +230,42 @@ function App() {
       <section className="todo-form">
         <h2>タスク追加</h2>
 
-        <input
-          type="text"
-          value={title}
-          onChange={(event) => setTitle(event.target.value)}
-          placeholder="タスク名を入力"
-        />
+        <form onSubmit={addTodo}>
+          <input
+            type="text"
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
+            placeholder="タスク名を入力"
+          />
 
-        <input
-          type="date"
-          value={deadline}
-          onChange={(event) => setDeadline(event.target.value)}
-        />
+          <input
+            type="date"
+            value={deadline}
+            onChange={(event) => setDeadline(event.target.value)}
+          />
 
-        <select
-          value={priority}
-          onChange={(event) => setPriority(Number(event.target.value))}
-        >
-          <option value={1}>高</option>
-          <option value={2}>中</option>
-          <option value={3}>低</option>
-        </select>
+          <select
+            value={priority}
+            onChange={(event) =>
+              setPriority(Number(event.target.value))
+            }
+          >
+            <option value={1}>高</option>
+            <option value={2}>中</option>
+            <option value={3}>低</option>
+          </select>
 
-        <button className="btn-add" onClick={addTodo}>
-          追加
-        </button>
+          <textarea
+            value={note}
+            onChange={(event) => setNote(event.target.value)}
+            placeholder="メモ（任意）"
+            rows={3}
+          />
+
+          <button className="btn-add" type="submit">
+            追加
+          </button>
+        </form>
       </section>
 
       {/* 検索・フィルター・ソート */}
@@ -287,14 +308,21 @@ function App() {
               deadline={todo.deadline}
               priority={todo.priority}
               completed={todo.completed}
+              note={todo.note ?? ""}
               onDelete={() => deleteTodo(todo.id)}
               onToggle={() => toggleTodo(todo.id)}
-              onUpdate={(newTitle, newDeadline, newPriority) =>
+              onUpdate={(
+                newTitle,
+                newDeadline,
+                newPriority,
+                newNote
+              ) =>
                 updateTodo(
                   todo.id,
                   newTitle,
                   newDeadline,
-                  newPriority
+                  newPriority,
+                  newNote
                 )
               }
             />
