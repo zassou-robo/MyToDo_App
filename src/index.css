@@ -1,7 +1,10 @@
-
-/* ========================================
-   全体設定
-======================================== */
+:root {
+  font-family: Inter, "Noto Sans JP", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  color: #172033;
+  background: #f4f7fb;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
 
 * {
   box-sizing: border-box;
@@ -9,324 +12,133 @@
 
 body {
   margin: 0;
-  font-family: sans-serif;
-  background-color: #f4f6f9;
-  color: #333;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.06), transparent 28rem),
+    #f4f7fb;
+  color: #172033;
 }
 
-
-/* ========================================
-   アプリ全体
-======================================== */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
 
 .app-container {
-  width: 100%;
-  max-width: 1000px;
+  width: min(100% - 32px, 920px);
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: 40px 0 64px;
 }
 
-
-/* ========================================
-   ヘッダー
-======================================== */
-
 header {
-  margin-bottom: 28px;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
 header h1 {
-  font-size: 28px;
-  margin-bottom: 8px;
+  margin: 0;
+  font-size: clamp(28px, 5vw, 40px);
+  letter-spacing: -0.04em;
 }
 
-
-/* ========================================
-   共通入力欄・選択欄
-======================================== */
-
-input:not([type="checkbox"]),
-select {
-  height: 40px;
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+header p {
+  margin: 0 0 4px;
+  color: #69758a;
   font-size: 14px;
-  margin: 0;
+  font-weight: 700;
 }
 
-input:focus,
-select:focus {
-  outline: 2px solid #93c5fd;
-  outline-offset: 1px;
-}
-
-
-/* ========================================
-   共通ボタン
-======================================== */
-
-button {
-  height: 40px;
-  padding: 0 16px;
-  border: none;
-  border-radius: 6px;
-  background-color: #2563eb;
-  color: white;
-  cursor: pointer;
-  margin: 0;
-  transition: background-color 0.2s ease;
-}
-
-button:hover {
-  background-color: #1d4ed8;
-}
-
-
-/* ========================================
-   見出し
-======================================== */
-
-h2 {
-  margin-top: 0;
-  font-size: 22px;
-}
-
-
-/* ========================================
-   タスク追加
-======================================== */
-
-.todo-form {
-  width: 100%;
-  max-width: 750px;
-  margin: 24px auto 0;
-
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-}
-
-.todo-form h2 {
-  width: 100%;
-  margin-bottom: 8px;
-}
-
-.todo-form input[type="text"] {
-  width: 220px;
-}
-
-.todo-form input[type="date"] {
-  width: 115px;
-}
-
-.todo-form select {
-  width: 60px;
-}
-
-.todo-form button {
-  min-width: 50px;
-}
-
-
-/* ========================================
-   検索・絞り込み・並び替え
-======================================== */
-
-.todo-controls {
-  width: 100%;
-  max-width: 750px;
-  margin: 24px auto;
-
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-}
-
-.todo-controls input {
-  width: 220px;
-}
-
-.todo-controls select {
-  min-width: 110px;
-}
-
-
-/* ========================================
-   Todo一覧
-======================================== */
-
-.todo-list {
-  width: 100%;
-  max-width: 750px;
-  margin: 24px auto 0;
-}
-
-
-/* ========================================
-   Todoアイテム
-======================================== */
-
-.todo-item {
-  width: 100%;
-  padding: 16px;
-  margin-bottom: 12px;
-
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 12px;
-
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
-}
-
-.todo-item-main {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-
-.todo-item-sub {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-left: 30px;
-}
-
-.todo-item-sub p {
-  margin: 0;
-  color: #666;
-  font-size: 14px;
-}
-
-.todo-item-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.todo-item-actions button {
-  margin: 0;
-}
-
-
-/* ========================================
-   タスク名
-======================================== */
-
-.todo-title {
-  font-weight: bold;
-  font-size: 16px;
+h2,
+h3,
+p {
   overflow-wrap: anywhere;
 }
 
-.todo-title.completed {
-  color: #999999;
-  text-decoration: line-through;
+h2 {
+  margin: 0 0 16px;
+  font-size: 20px;
+  letter-spacing: -0.02em;
 }
 
-
-/* ========================================
-   優先度バッジ
-======================================== */
-
-.priority-badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: bold;
-}
-
-.priority-1 {
-  background-color: #fee2e2;
-  color: #dc2626;
-}
-
-.priority-2 {
-  background-color: #ffedd5;
-  color: #ea580c;
-}
-
-.priority-3 {
-  background-color: #dbeafe;
-  color: #2563eb;
-}
-
-
-/* ========================================
-   ボタンの種類別デザイン
-======================================== */
-
-/* 追加・保存 */
-.btn-add,
-.btn-save {
-  background-color: #2563eb;
-}
-
-.btn-add:hover,
-.btn-save:hover {
-  background-color: #1d4ed8;
-}
-
-/* 編集 */
-.btn-edit {
-  background-color: #64748b;
-}
-
-.btn-edit:hover {
-  background-color: #475569;
-}
-
-/* 削除 */
-.btn-delete {
-  background-color: #dc2626;
-}
-
-.btn-delete:hover {
-  background-color: #b91c1c;
-}
-
-/* キャンセル */
-.btn-cancel {
-  background-color: #e5e7eb;
-  color: #333;
-}
-
-.btn-cancel:hover {
-  background-color: #d1d5db;
-}
-
-
-/* ========================================
-   ダッシュボード
-======================================== */
-
-.dashboard {
+input:not([type="checkbox"]),
+select,
+textarea {
   width: 100%;
-  max-width: 750px;
-  margin: 24px auto;
-  padding: 24px;
+  border: 1px solid #dfe5ef;
+  border-radius: 9px;
+  background: #fff;
+  color: #172033;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
 
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+input:not([type="checkbox"]),
+select {
+  height: 44px;
+  padding: 0 12px;
+}
+
+textarea {
+  min-height: 88px;
+  padding: 11px 12px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9aa4b5;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #79a7f8;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.11);
+}
+
+button {
+  height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 9px;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+button:hover {
+  background: #1d4ed8;
+  box-shadow: 0 5px 12px rgba(37, 99, 235, 0.16);
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Dashboard */
+.dashboard {
+  margin-bottom: 20px;
+  padding: 24px;
+  border: 1px solid #e7ebf2;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 10px 30px rgba(31, 41, 55, 0.06);
 }
 
 .dashboard h2 {
+  margin-bottom: 18px;
   text-align: center;
-  margin-bottom: 24px;
 }
-
-/* 集計カード */
 
 .dashboard-summary {
   display: grid;
@@ -338,234 +150,483 @@ h2 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 16px 8px;
-
-  background-color: #f4f6f9;
-  border-radius: 10px;
+  gap: 5px;
+  padding: 15px 8px;
+  border: 1px solid transparent;
+  border-radius: 12px;
 }
 
 .summary-card span {
-  color: #666;
-  font-size: 14px;
+  color: inherit;
+  font-size: 13px;
+  font-weight: 800;
 }
 
 .summary-card strong {
-  font-size: 26px;
+  font-size: 28px;
+  line-height: 1;
 }
 
-/* タスク情報 */
+.summary-card:nth-child(1) {
+  border-color: #e2e8f0;
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.summary-card:nth-child(2) {
+  border-color: #bbf7d0;
+  background: #effcf4;
+  color: #15803d;
+}
+
+.summary-card:nth-child(3) {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
 
 .dashboard-section {
-  margin-top: 24px;
+  margin-top: 14px;
+  padding: 16px;
+  border: 1px solid #edf0f5;
+  border-radius: 12px;
+  background: #f8fafc;
 }
 
 .dashboard-section h3 {
-  font-size: 17px;
-  margin-bottom: 12px;
+  margin: 0 0 10px;
+  color: #334155;
+  font-size: 15px;
 }
 
 .dashboard-section p {
+  margin: 7px 0;
+  color: #64748b;
   font-size: 14px;
-  margin: 8px 0;
+  line-height: 1.5;
 }
-
-/* 期限関連のリスト */
 
 .dashboard-lists {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 12px;
 }
 
-.overdue-text {
-  color: #dc2626;
+.overdue-text,
+.dashboard-section .overdue-text {
+  color: #dc2626 !important;
+  font-weight: 800;
 }
-
-
-/* ========================================
-   進捗バー
-======================================== */
 
 .progress-container {
-  width: 100%;
-  max-width: 400px;
-  margin: 16px 0;
+  margin-top: 20px;
 }
 
 .progress-info {
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
-  font-weight: bold;
+  font-size: 14px;
+  font-weight: 800;
 }
 
 .progress-bar {
-  width: 100%;
-  height: 16px;
-  background-color: #e0e0e0;
-  border-radius: 8px;
+  height: 12px;
   overflow: hidden;
+  border-radius: 999px;
+  background: #e8edf4;
 }
 
 .progress-fill {
   height: 100%;
-  background-color: #4caf50;
-  border-radius: 8px;
-  transition: width 0.3s ease;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #2563eb, #60a5fa);
+  transition: width 0.35s ease;
 }
 
-.dashboard .progress-container {
-  max-width: none;
-  margin: 28px 0 0;
+/* Task form */
+.todo-form {
+  margin-bottom: 20px;
+  padding: 22px 24px;
+  border: 1px solid #e7ebf2;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(31, 41, 55, 0.05);
 }
 
+.todo-form form {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.4fr) 150px 90px 70px;
+  gap: 10px;
+  align-items: end;
+}
 
-/* ========================================
-   スマートフォン対応
-======================================== */
+.todo-form textarea {
+  grid-column: 1 / 4;
+}
 
-@media (max-width: 600px) {
+.todo-form .btn-add {
+  grid-column: 4;
+  grid-row: 2;
+}
 
-  /* アプリ全体 */
+.todo-form h2 {
+  margin-bottom: 14px;
+}
 
-  .app-container {
-    padding: 16px 12px;
-  }
+/* Search and sorting */
+.todo-controls {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) 150px 150px;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #e7ebf2;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 5px 16px rgba(31, 41, 55, 0.04);
+}
 
-  header h1 {
-    font-size: 24px;
-  }
+/* Todo list */
+.todo-list {
+  width: 100%;
+}
 
+.todo-list > h2 {
+  margin: 22px 0 12px;
+}
 
-  /* タスク追加 */
+.todo-list > p {
+  padding: 32px;
+  border: 1px dashed #d8deea;
+  border-radius: 14px;
+  background: #fff;
+  color: #7a8496;
+  text-align: center;
+}
 
-  .todo-form {
-    align-items: stretch;
-  }
+.todo-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 16px;
+  border: 1px solid #e1e6ef;
+  border-left: 4px solid #cbd5e1;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(31, 41, 55, 0.05);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
 
-  .todo-form input,
-  .todo-form select,
-  .todo-form button {
-    width: 100%;
-  }
+.todo-item:hover {
+  border-right-color: #dce3ed;
+  box-shadow: 0 8px 20px rgba(31, 41, 55, 0.08);
+  transform: translateY(-1px);
+}
 
+.todo-item.overdue {
+  border-left-color: #dc2626;
+  background: #fffafa;
+}
 
-  /* 検索・絞り込み */
+.todo-item.urgent {
+  border-left-color: #f97316;
+  background: #fffdf8;
+}
 
-  .todo-controls {
-    flex-direction: column;
-    align-items: stretch;
-  }
+.todo-item-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
 
-  .todo-controls input,
-  .todo-controls select {
-    width: 100%;
-  }
+.todo-item-main input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  accent-color: #2563eb;
+  cursor: pointer;
+}
 
+.todo-title {
+  min-width: 0;
+  flex: 1;
+  font-size: 16px;
+  font-weight: 850;
+  letter-spacing: -0.01em;
+}
 
-  /* Todoアイテム */
+.todo-title.completed {
+  color: #a0a8b5;
+  text-decoration: line-through;
+}
 
-  .todo-item {
-    padding: 12px;
-  }
+.todo-item:has(.todo-title.completed) {
+  opacity: 0.68;
+  box-shadow: none;
+}
 
-  .todo-item-main {
-    flex-wrap: wrap;
-  }
+.priority-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 28px;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+}
 
-  .todo-item-sub {
-  flex-wrap: wrap;
-  gap: 8px;
-  padding-left: 30px;
+.priority-1 {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.priority-2 {
+  background: #ffedd5;
+  color: #ea580c;
+}
+
+.priority-3 {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.todo-item-sub {
+  display: grid;
+  grid-template-columns: max-content minmax(160px, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding-left: 28px;
+}
+
+.todo-item-sub > p {
+  margin: 0;
+  color: #738096;
+  font-size: 13px;
+}
+
+.todo-note {
+  padding: 8px 10px;
+  border-left: 3px solid #93b4ef;
+  border-radius: 6px;
+  background: #f5f8fd;
+  color: #4e5d73 !important;
+  line-height: 1.55;
+  white-space: pre-wrap;
 }
 
 .todo-item-actions {
-  width: 100%;
   display: flex;
   justify-content: flex-end;
   gap: 8px;
 }
 
-  .todo-item-actions button {
-    flex: 1;
+.todo-item-actions button {
+  height: 38px;
+  padding: 0 13px;
+  font-size: 13px;
+}
+
+.btn-edit {
+  background: #64748b;
+}
+
+.btn-edit:hover {
+  background: #475569;
+}
+
+.btn-delete {
+  background: #dc2626;
+}
+
+.btn-delete:hover {
+  background: #b91c1c;
+}
+
+.btn-save {
+  background: #2563eb;
+}
+
+.btn-cancel {
+  background: #e8edf4;
+  color: #4b5563;
+}
+
+.btn-cancel:hover {
+  background: #dfe5ee;
+  box-shadow: none;
+}
+
+/* Edit mode */
+.todo-item-edit {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 150px 90px;
+  gap: 10px;
+}
+
+.todo-item-edit textarea {
+  grid-column: 1 / 3;
+}
+
+.todo-item-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: end;
+  gap: 8px;
+}
+
+@media (max-width: 700px) {
+  .app-container {
+    width: min(100% - 24px, 920px);
+    padding-top: 24px;
   }
 
-
-  /* ダッシュボード */
+  header {
+    align-items: flex-start;
+  }
 
   .dashboard {
     padding: 16px;
   }
 
+  .dashboard-lists {
+    grid-template-columns: 1fr;
+  }
+
+  .todo-form {
+    padding: 18px;
+  }
+
+  .todo-form form {
+    grid-template-columns: 1fr 90px;
+  }
+
+  .todo-form input[type="text"],
+  .todo-form input[type="date"],
+  .todo-form select {
+    grid-column: 1;
+  }
+
+  .todo-form input[type="date"] {
+    grid-row: 2;
+  }
+
+  .todo-form select {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .todo-form textarea {
+    grid-column: 1 / 3;
+  }
+
+  .todo-form .btn-add {
+    grid-column: 1 / 3;
+    grid-row: auto;
+  }
+
+  .todo-controls {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .todo-controls input {
+    grid-column: 1 / 3;
+  }
+
+  .todo-item-sub {
+    grid-template-columns: 1fr auto;
+  }
+
+  .todo-note {
+    grid-column: 1 / 3;
+    grid-row: 2;
+  }
+
+  .todo-item-actions {
+    grid-column: 2;
+  }
+
+  .todo-item-edit {
+    grid-template-columns: 1fr 90px;
+  }
+
+  .todo-item-edit textarea,
+  .todo-item-edit-actions {
+    grid-column: 1 / 3;
+  }
+}
+
+@media (max-width: 460px) {
+  header h1 {
+    font-size: 28px;
+  }
+
+  header p {
+    max-width: 100px;
+    text-align: right;
+  }
+
   .dashboard-summary {
-    gap: 8px;
+    gap: 6px;
   }
 
   .summary-card {
-    padding: 12px 4px;
+    padding-inline: 4px;
   }
 
   .summary-card strong {
-    font-size: 22px;
+    font-size: 23px;
   }
 
-  .dashboard-lists {
+  .todo-form form {
     grid-template-columns: 1fr;
-    gap: 0;
   }
-}
-/* ========================================
-   ダッシュボードの色分け
-======================================== */
 
-/* 全タスク */
-.summary-card:nth-child(1) {
-  background-color: #f1f5f9;
-  color: #475569;
-}
+  .todo-form input[type="text"],
+  .todo-form input[type="date"],
+  .todo-form select,
+  .todo-form textarea,
+  .todo-form .btn-add {
+    grid-column: 1;
+    grid-row: auto;
+  }
 
-/* 完了 */
-.summary-card:nth-child(2) {
-  background-color: #dcfce7;
-  color: #15803d;
-}
+  .todo-controls {
+    grid-template-columns: 1fr;
+  }
 
-/* 未完了 */
-.summary-card:nth-child(3) {
-  background-color: #dbeafe;
-  color: #1d4ed8;
-}
+  .todo-controls input {
+    grid-column: 1;
+  }
 
-/* ダッシュボード内の各セクション */
-.dashboard-section {
-  padding: 16px;
-  background-color: #f8fafc;
-  border-radius: 10px;
-}
+  .todo-item-sub {
+    grid-template-columns: 1fr;
+    padding-left: 28px;
+  }
 
-/* セクション見出し */
-.dashboard-section h3 {
-  color: #334155;
-}
+  .todo-note,
+  .todo-item-actions {
+    grid-column: 1;
+  }
 
-/* 期限切れ (ダッシュボード)*/
-.dashboard-section .overdue-text {
-  color: #dc2626;
-  font-weight: bold;
-}
-/* 期限切れ */
-.todo-item.overdue {
-  border-left: 5px solid #dc2626;
-  background-color: #fff7f7;
-}
+  .todo-item-actions {
+    width: 100%;
+  }
 
-/* 期限が3日以内 */
-.todo-item.urgent {
-  border-left: 5px solid #f97316;
-  background-color: #fffaf5;
-}
-/* 完了済みタスク */
-.todo-item:has(.todo-title.completed) {
-  opacity: 0.6;
+  .todo-item-actions button {
+    flex: 1;
+  }
+
+  .todo-item-edit {
+    grid-template-columns: 1fr;
+  }
+
+  .todo-item-edit textarea,
+  .todo-item-edit-actions {
+    grid-column: 1;
+  }
 }

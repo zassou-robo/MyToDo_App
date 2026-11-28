@@ -78,7 +78,7 @@ function TodoItem({
       }`}
     >
       {isEditing ? (
-        <>
+        <div className="todo-item-edit">
           <input
             type="text"
             value={editTitle}
@@ -116,17 +116,19 @@ function TodoItem({
             rows={3}
           />
 
-          <button className="btn-save" onClick={handleSave}>
-            保存
-          </button>
+          <div className="todo-item-edit-actions">
+            <button className="btn-save" onClick={handleSave}>
+              保存
+            </button>
 
-          <button
-            className="btn-cancel"
-            onClick={() => setIsEditing(false)}
-          >
-            キャンセル
-          </button>
-        </>
+            <button
+              className="btn-cancel"
+              onClick={() => setIsEditing(false)}
+            >
+              キャンセル
+            </button>
+          </div>
+        </div>
       ) : (
         <>
           <div className="todo-item-main">
